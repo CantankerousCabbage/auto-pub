@@ -1,0 +1,31 @@
+{
+  "name": "auto-pub",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Auto publisher for FHIR IG's",
+  "main": "cli.ts",
+  "scripts": {
+    "start": "npm run build && publish",
+    "build": "tsc --project tsconfig.json && tsc-alias && npm link",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write .",
+    "test": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.2.0",
+    "prettier": "3.5.3",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.1"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.5.3",
+    "commander": "^14.0.0"
+  },
+   "bin": {
+    "publish": "./dist/src/cli.js"
+  }
+}
