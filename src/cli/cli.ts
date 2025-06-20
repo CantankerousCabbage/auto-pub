@@ -26,15 +26,21 @@ const { debug } = program.opts();
 // Set Verbose mode as a env variable
 process.env.DEBUG = debug;
 
-// Register a default command that will be used to run the interactive workflow if no other command is provided
+// Register the entry command which allows selection of which action to perform
 program
-  .command(MainMenuAction.Test, { isDefault: true, hidden: true })
+  .command(MainMenuAction.Entry, { isDefault: true, hidden: true })
   .action(() => handleAction(program));
 
-// Register the `init` command, this will be used to initialise a new project
-// program
-//   .command(MainMenuAction.Init)
-//   .description('Start the interactive workflow to provision a new project')
-//   .action(() => handleAction(sga, MainMenuAction.Init));
+// Register the 'devPublish' command, used to publish a development FHIR IG
+program
+  .command(MainMenuAction.DevPublish)
+  .description("Workflow to publish a development FHIR IG for testing purposes")
+  .action(() => handleAction(program));
+
+// Register the 'prodPublish' command, used to prepare a FHIR IG for release
+program
+  .command(MainMenuAction.ProdPublish)
+  .description("Workflow to publish FHIR IG release for use of the official portal")
+  .action(() => handleAction(program));
 
 program.parse(process.argv);

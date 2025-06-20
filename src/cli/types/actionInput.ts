@@ -1,5 +1,10 @@
 export enum MainMenuAction {
-  Test = 'test',
+  Entry = 'Entry',
+  SetupEnvironment = 'SetupEnvironment',
+  DevPublish = 'DevPublish',
+  ProdPublish = 'ProdPublish',
+  Exit = 'Exit',
+  Help = 'Help',
 }
 
 export type ActionInput = MainMenuAction;

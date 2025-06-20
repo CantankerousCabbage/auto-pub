@@ -1,17 +1,22 @@
 import { ActionInput } from '@/types/actionInput.js';
 import { Action } from './action.js';
+import { logInfo } from '@/utils/logging.js';
 
-class Test extends Action {
+class Help extends Action {
   constructor() {
-    super('test');
+    super('Exit');
   }
 
   async execute(): Promise<void> {
-    await console.log('Test action executed');
+    //TODO check that state is fine to exit
+    await logInfo('Exiting application.');
+
+    this.executed = true;
+    process.exit(0);
   }
 
   async undo(): Promise<void> {
-    await console.log('Test action undone');
+    //Exit is final, no undo needed
   }
 
   getHelpMessage(): string {
@@ -23,4 +28,4 @@ class Test extends Action {
   }
 }
 
-export const testAction = new Test();
+export const exit = new Help();

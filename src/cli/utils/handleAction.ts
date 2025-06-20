@@ -1,48 +1,83 @@
 import { Command } from 'commander';
-// const { Select } from 'enquirer';
 
 import { select } from '@inquirer/prompts';
 import { Action } from '../actions/action.js';
 import { ActionInput, MainMenuAction } from '../types/actionInput.js';
-import { testAction } from '../actions/test.js';
+import { cleanupAndExit } from '@/cleanupAndExit.js';
+
+import { logError } from './logging.js';
+//Actions
+import { devPublish } from '@/actions/devPublish.js';
+import { entry } from '@/actions/entry.js';
+import { prodPublish } from '@/actions/prodPublish.js';
+import { exit } from '@/actions/exit.js';
+import { ActionStack } from './actionStack.js';
 
 // Inquirer flow for the main menu (not commander) - Refer to @inquirer/prompts
-// Add state to track the current menu
 export const handleAction = async (
   publish: Command,
   parsedAction?: ActionInput,
 ) => {
-  const actionInput =
-    parsedAction ||
-    (await select({
-      message: 'What would you like to do?',
-      choices: [
-        {
-          name: 'Test actions',
-          value: MainMenuAction.Test,
-        },
-      ],
-    }));
+  const currentInput = parsedAction || MainMenuAction.Entry;
+  let currentAction: Action = fetchAction(currentInput);
 
-  const action: Action = fetchAction(actionInput);
+  while (currentAction.getActionName() !== MainMenuAction.Exit) {
 
-  try {
-    await action.execute();
-    // Push the action to the stack after execution
-    // ActionStack.push(action);
-  } catch (error) {
-    console.error(`Error executing action: ${error.message}`);
+        const choices = currentAction.getChildActions().concat
+          ([
+             MainMenuAction.Exit,
+             MainMenuAction.Help
+          ]);
 
-    //TODO execute cleanup use undo/stack
+        const actionInput: ActionInput = await select({
+          message: currentAction.getPrompt(),
+          choices: choices
+        })
+
+      //Fetch action designated by the user input
+      if (actionInput === MainMenuAction.Help) {
+        currentAction.printHelpMessage();
+        continue; // Don't progress to next action
+      }
+
+      const action: Action = fetchAction(actionInput);
+
+      try {
+        await action.execute();
+        // Push the action to the stack after execution
+        // ActionStack.push(action);
+      } catch (error) {
+        logError(`Error executing action: ${error.message}`);
+
+        // Attempts tp clean up and gracefully exit
+        cleanupAndExit(1);
+      }
+
+      // If help selected then action isn't state is not progressed.
+       ActionStack.push(action);
+       currentAction = action;
+
+    };
   }
-};
 
 //Fetch action based on the action input
 const fetchAction = (action: ActionInput) => {
   switch (action) {
-    case testAction.getActionName():
-      return testAction;
+    case MainMenuAction.Entry:
+      return entry;
       break;
+
+    case MainMenuAction.DevPublish:
+      return devPublish;
+      break;
+
+    case MainMenuAction.ProdPublish:
+    return prodPublish;
+    break;
+
+    case MainMenuAction.Exit:
+    return exit;
+    break;
 
     default:
       throw new Error(`Action ${action} not found`);

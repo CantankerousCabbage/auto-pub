@@ -16,3 +16,10 @@ Automate the publication of FHIR Implementation Guides (IG) ready for deployment
    ```console
    $ auto-pub --help
    ```
+
+
+## References
+
+**FHIR IG Publisher scripts**
+https://github.com/HL7/ig-publisher-scripts
+
