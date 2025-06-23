@@ -6,10 +6,11 @@
   "main": "cli.ts",
   "scripts": {
     "start": "npm run build && publish",
-    "build": "tsc --project tsconfig.json && tsc-alias && npm link",
+    "build": "tsc --project tsconfig.json && tsc-alias && npm run copy-files && npm link",
     "lint": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write .",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "copy-files": "node ./src/scripts/copyFiles.js"
   },
   "devDependencies": {
     "@types/node": "^24.0.3",
@@ -23,9 +24,11 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^7.5.3",
-    "commander": "^14.0.0"
+    "commander": "^14.0.0",
+    "execa": "^9.6.0",
+    "fs-extra": "^11.3.0"
   },
-   "bin": {
+  "bin": {
     "publish": "./dist/src/cli.js"
   }
 }

@@ -19,8 +19,8 @@ export abstract class Action {
   abstract undo(): Promise<void>;
   abstract getChildActions(): ActionInput[];
 
-  printHelpMessage(): void {
-    logInfo(this.helpMessage);
+  getHelpMessage(): string {
+    return this.helpMessage;
   }
 
   tooExecute(): boolean {

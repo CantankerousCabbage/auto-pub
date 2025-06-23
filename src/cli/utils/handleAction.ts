@@ -5,7 +5,7 @@ import { Action } from '../actions/action.js';
 import { ActionInput, MainMenuAction } from '../types/actionInput.js';
 import { cleanupAndExit } from '@/cleanupAndExit.js';
 
-import { logError } from './logging.js';
+import { logError, logInfo } from './logging.js';
 //Actions
 import { devPublish } from '@/actions/devPublish.js';
 import { entry } from '@/actions/entry.js';
@@ -36,7 +36,7 @@ export const handleAction = async (
 
       //Fetch action designated by the user input
       if (actionInput === MainMenuAction.Help) {
-        currentAction.printHelpMessage();
+        logInfo(currentAction.getHelpMessage());
         continue; // Don't progress to next action
       }
 
@@ -53,7 +53,7 @@ export const handleAction = async (
         cleanupAndExit(1);
       }
 
-      // If help selected then action isn't state is not progressed.
+      // If help selected then action state is not progressed.
        ActionStack.push(action);
        currentAction = action;
 

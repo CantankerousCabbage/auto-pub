@@ -1,6 +1,9 @@
 import { ActionInput } from '@/types/actionInput.js';
 import { Action } from './action.js';
-import { logInfo } from '@/utils/logging.js';
+import { logError, logInfo } from '@/utils/logging.js';
+import { runMake } from '@/utils/utilMake.js';
+import { internalPath } from '@/utils/utilPath.js';
+import { runScript } from '@/scripthandler.js';
 
 class DevPublish extends Action {
   constructor() {
@@ -16,7 +19,25 @@ class DevPublish extends Action {
   }
 
   async execute(): Promise<boolean> {
-    await logInfo(`${this.getActionName()} action executed`);
+    let success = true;
+    await logInfo(`Executing action for ${this.getActionName()}`);
+
+    // const target = internalPath('../scripts/test.sh');
+    const target = '_genonce.sh';
+
+    try {
+      const stdout = await runScript(target);
+      // logInfo(`Script output: ${stdout}`);
+
+    } catch (error) {
+        logError(`Error running script: ${error.message}`);
+        success = false;
+    }
+
+    if (!success) {
+      await logInfo(`Failed to run make command in ${target}`);
+      return Promise.resolve(false);
+    }
 
     this.executed = true;
     return Promise.resolve(true);

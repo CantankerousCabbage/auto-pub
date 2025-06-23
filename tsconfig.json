@@ -24,6 +24,6 @@
     "emitDeclarationOnly": false,
     "esModuleInterop": true
   },
-  "include": ["./src/cli/**/*"],
+  "include": ["./src/**/*"],
   "exclude": ["node_modules", "**/*/dist"]
 }
