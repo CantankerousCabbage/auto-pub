@@ -4,7 +4,7 @@ import { select } from '@inquirer/prompts';
 import { Action } from '../actions/action.js';
 import { ActionInput, MainMenuAction } from '../types/actionInput.js';
 import { cleanupAndExit } from '@/cleanupAndExit.js';
-
+import { OptionValues } from "commander";
 import { logError, logInfo } from './logging.js';
 //Actions
 import { devPublish } from '@/actions/devPublish.js';
@@ -12,14 +12,25 @@ import { entry } from '@/actions/entry.js';
 import { prodPublish } from '@/actions/prodPublish.js';
 import { exit } from '@/actions/exit.js';
 import { ActionStack } from './actionStack.js';
-
+import { Config } from '@/types/config.types.js';
+import { config } from '@/config.js';
 // Inquirer flow for the main menu (not commander) - Refer to @inquirer/prompts
 export const handleAction = async (
   publish: Command,
   parsedAction?: ActionInput,
 ) => {
   const currentInput = parsedAction || MainMenuAction.Entry;
+
+  //Update global config from Publisher command options
+  const publishOpts: Config = publish.opts() as Config;
+  config.update(publishOpts);
+
+
   let currentAction: Action = fetchAction(currentInput);
+  let dummy = {} as Config;
+
+  //Execute entry. Add logic if skip args introduced.
+  await currentAction.execute(dummy);
 
   while (currentAction.getActionName() !== MainMenuAction.Exit) {
 
@@ -43,7 +54,7 @@ export const handleAction = async (
       const action: Action = fetchAction(actionInput);
 
       try {
-        await action.execute();
+        await action.execute(dummy);
         // Push the action to the stack after execution
         // ActionStack.push(action);
       } catch (error) {

@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-import { Command } from 'commander';
-
+import { Command, OptionValues } from 'commander';
+import { config } from './config.js';
+import { Config } from './types/config.types.js';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { MainMenuAction } from './types/actionInput.js';
 import { handleAction } from './utils/handleAction.js';
+import { logInfo } from './utils/logging.js';
 
 // Loads package.json which is copied to the dist folder at build time
 const packageJson = JSON.parse(
@@ -20,11 +22,7 @@ export const program = new Command()
   .description(packageJson.description)
   .option('-d, --debug', 'output advanced logs for debug', false);
 
-// TODO: Implement verbose mode, figure out what to do with --config-file
-const { debug } = program.opts();
-
-// Set Verbose mode as a env variable
-process.env.DEBUG = debug;
+// Assign options to environment variables for global access
 
 // Register the entry command which allows selection of which action to perform
 program
@@ -43,4 +41,9 @@ program
   .description("Workflow to publish FHIR IG release for use of the official portal")
   .action(() => handleAction(program));
 
+
+// TODO option to use environment variables
+// process.env.DEBUG = options.debug;
 program.parse(process.argv);
+
+

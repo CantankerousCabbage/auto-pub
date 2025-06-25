@@ -1,12 +1,13 @@
 import { ActionInput } from '@/types/actionInput.js';
 import { Action } from './action.js';
+import { Config } from '@/types/config.types.js';
 
 class Test extends Action {
   constructor() {
     super('test');
   }
 
-  async execute(): Promise<void> {
+  async execute(config: Config): Promise<void> {
     await console.log('Test action executed');
   }
 

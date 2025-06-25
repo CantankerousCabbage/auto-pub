@@ -1,6 +1,8 @@
 import { ActionInput } from '@/types/actionInput.js';
 import { Action } from './action.js';
 import { logInfo } from '@/utils/logging.js';
+import { Config } from '@/types/config.types.js';
+import { config } from '@/config.js';
 
 class Help extends Action {
   constructor() {
@@ -8,6 +10,7 @@ class Help extends Action {
   }
 
   async execute(): Promise<void> {
+    const { debug } = config.get()
     //TODO check that state is fine to exit
     await logInfo('Exiting application.');
 

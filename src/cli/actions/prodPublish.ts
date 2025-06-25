@@ -1,6 +1,8 @@
 import { ActionInput } from '@/types/actionInput.js';
 import { Action } from './action.js';
 import { logInfo } from '@/utils/logging.js';
+import { Config } from '@/types/config.types.js';
+import { config } from '@/config.js';
 
 class ProdPublish extends Action {
   constructor() {
@@ -16,6 +18,8 @@ class ProdPublish extends Action {
   }
 
   async execute(): Promise<boolean> {
+    const { debug } = config.get();
+
     await logInfo(`${this.getActionName()} action executed`);
 
     this.executed = true;

@@ -1,6 +1,7 @@
 //Abstract class for actions
 import { ActionInput } from "@/types/actionInput.js";
 import { logInfo } from "@/utils/logging.js";
+import { Config } from "@/types/config.types.js";
 
 export abstract class Action {
   protected actionName: string;
@@ -15,7 +16,7 @@ export abstract class Action {
     this.prompt = prompt || "";
   }
 
-  abstract execute(): Promise<boolean | void>;
+  abstract execute(config: Config): Promise<boolean | void>;
   abstract undo(): Promise<void>;
   abstract getChildActions(): ActionInput[];
 

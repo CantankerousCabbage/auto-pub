@@ -1,9 +1,8 @@
 import { ActionInput } from '@/types/actionInput.js';
 import { Action } from './action.js';
 import { logError, logInfo } from '@/utils/logging.js';
-import { runMake } from '@/utils/utilMake.js';
-import { internalPath } from '@/utils/utilPath.js';
 import { runScript } from '@/scripthandler.js';
+import { Config } from '@/types/config.types.js';
 
 class DevPublish extends Action {
   constructor() {
@@ -18,33 +17,27 @@ class DevPublish extends Action {
     );
   }
 
-  async execute(): Promise<boolean> {
+  async execute(config: Config): Promise<boolean> {
     let success = true;
-    await logInfo(`Executing action for ${this.getActionName()}`);
+    logInfo(`Executing action for ${this.getActionName()}`);
 
     // const target = internalPath('../scripts/test.sh');
     const target = '_genonce.sh';
 
     try {
       const stdout = await runScript(target);
-      // logInfo(`Script output: ${stdout}`);
+      logInfo(`Script output: ${stdout}`);
 
     } catch (error) {
         logError(`Error running script: ${error.message}`);
         success = false;
     }
 
-    if (!success) {
-      await logInfo(`Failed to run make command in ${target}`);
-      return Promise.resolve(false);
-    }
-
-    this.executed = true;
-    return Promise.resolve(true);
+    return Promise.resolve(success);
   }
 
   async undo(): Promise<void> {
-    await logInfo(`${this.getActionName()} action undone`);
+    logInfo(`${this.getActionName()} action undone`);
   }
 
   getHelpMessage(): string {
