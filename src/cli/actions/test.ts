@@ -7,7 +7,7 @@ class Test extends Action {
     super('test');
   }
 
-  async execute(config: Config): Promise<void> {
+  async execute(): Promise<void> {
     await console.log('Test action executed');
   }
 

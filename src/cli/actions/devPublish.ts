@@ -17,7 +17,7 @@ class DevPublish extends Action {
     );
   }
 
-  async execute(config: Config): Promise<boolean> {
+  async execute(): Promise<boolean> {
     let success = true;
     logInfo(`Executing action for ${this.getActionName()}`);
 

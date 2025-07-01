@@ -1,37 +1,69 @@
 
 import fs from 'fs';
 import path from 'path';
-import { logError } from './logging.js';
+import { logDebug, logError } from './logging.js';
 import { fileURLToPath } from 'url';
-import { config } from '@/config.js';
 
+// Path to compiled CLI root dir
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const { debug } = config.get();
 
-export const internalPath = (target: string) => {
-    const { debug } = config.get();
+// Backtrack to root (src) -> dist/src <here>/utils
+const projectRoot = path.resolve(__dirname, '../');
+
+export const generateInternalPath = (target: string) : string => {
+    return path.join(projectRoot, target);
+}
+
+export const generateProcessPath = (target: string) : string => {
+    return path.join(process.cwd(), target);
+}
+
+export const internalPathExists = (target: string) : boolean => {
+
 
     // Work from src not src/utils
-    const fullPath = path.join( __dirname, "../", target);
+    const fullPath = path.join(projectRoot, target);
 
     if (!fs.existsSync(fullPath)) {
-        if(debug) logError(`Path does not exist: ${fullPath}`);
-        return "";
+        logDebug(`Path does not exist: ${fullPath}`);
+        return false;
     }
 
-    return path.join(__dirname, target);
+    return true;
 };
 
-export const processPath = (target: string) => {
-    const { debug } = config.get();
+export const processPathExists = (target: string) : boolean => {
 
-     const fullPath = path.join(process.cwd(), target);
+    const fullPath = path.join(process.cwd(), target);
 
     if (!fs.existsSync(fullPath)) {
-        if(debug) logError(`Path does not exist: ${fullPath}`);
-        return "";
+        logError(`Path does not exist: ${fullPath}`);
+        return false;
     }
 
-    return path.join(process.cwd(), target);
+    return true;
 };
+
+export const createFolder = (path: string) : boolean => {
+
+    let success = false;
+    logDebug(`Creating folder: ${path}`);
+
+    if (!fs.existsSync(path)) {
+
+        try {
+            fs.mkdirSync(path);
+        } catch (error) {
+            logError(`Error creating folder ${path}: ${error.message}`);
+            success = false;
+        }
+
+        logError(`Path does not exist: ${path}`);
+    } else {
+        logDebug(`Folder: ${path} already exists.`);
+    }
+
+    return success;
+}
+

@@ -1,6 +1,13 @@
 import chalk from 'chalk';
 
 /**
+ * Logs debug information in white. Debug must be enabled to view.
+ * @returns
+ */
+export const logDebug = (message: string) =>
+  console.debug(chalk.yellow("[Debug]"), chalk.white(message));
+
+/**
  * Logs an informational message in blue color.
  * @param {string} message - The message to be logged.
  */
@@ -27,3 +34,7 @@ export const logWarning = (message: string) =>
  */
 export const logError = (message: string) =>
     console.error(chalk.red(message));
+
+const setDebugLevel = (commandFlag: boolean) => {
+  process.env.NODE_DEBUG = commandFlag.toString();
+}

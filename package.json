@@ -24,9 +24,11 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^7.5.3",
+    "axios": "^1.10.0",
     "commander": "^14.0.0",
     "execa": "^9.6.0",
-    "fs-extra": "^11.3.0"
+    "fs-extra": "^11.3.0",
+    "simple-git": "^3.28.0"
   },
   "bin": {
     "publish": "./dist/src/cli.js"

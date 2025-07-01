@@ -8,14 +8,16 @@ import { ActionInput, MainMenuAction } from '@/types/actionInput.js';
 import { ChoiceInput, PublisherState } from '@/types/choiceInput.js';
 import { OptionValues } from 'commander';
 import { config } from '@/config.js';
+
 //Utils
-import { checkPublisher } from '@/utils/utilPublisher.js';
+import { checkPublisher, downloadPublisherJar } from '@/utils/utilPublisher.js';
+import { runScript } from '@/scripthandler.js';
 
 class Entry extends Action {
   constructor() {
     const actionName = 'Entry';
     const prompt = 'What would you like to do?';
-    const helpMessage = `Explain the menu options for the action`;
+    const helpMessage = `Choose publication mode:`;
 
     super(
       actionName, prompt, helpMessage
@@ -23,32 +25,22 @@ class Entry extends Action {
   }
 
   async execute(): Promise<boolean> {
-    const { debug } = config.get()
-    //1. Display welcome message
-    //1. Check that publiher.jar exists and is up to date
-    //2. Install it if not
-    //3. Progress to menu
 
     logInfo(`Welcome to Auto Publisher.`);
     logInfo(`Checking FHIR IG Publisher version...`);
 
     //TODO add version check
-    const upToDate : ChoiceInput = PublisherState.NotFound; //Placeholder
+    const pubState : PublisherState = await checkPublisher(); //Placeholder
 
-    if(checkPublisher() === PublisherState.NotFound) {
-      const confirmUpdate = await confirm({
-        message: 'IG Publisher is not up to date. Do you want to update it?',
-      })
+    if(pubState === PublisherState.NotFound || pubState === PublisherState.OutOfDate) {
 
-      if(confirmUpdate) {
-        logInfo('Updating IG Publisher...');
-        // TODO: Implement update logic
-      } else {
-        logInfo('Exiting Auto Publisher.');
-        return Promise.resolve(false);
-      }
-    };
+      logInfo(`Downloading latest version of IG Publisher...`)
 
+      await downloadPublisherJar();
+      logInfo(`IG Publisher updated.`)
+    } else {
+      logInfo(`IG Publisher is up to date.`)
+    }
 
     this.executed = true;
     return Promise.resolve(true);

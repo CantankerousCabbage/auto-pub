@@ -16,7 +16,7 @@ export abstract class Action {
     this.prompt = prompt || "";
   }
 
-  abstract execute(config: Config): Promise<boolean | void>;
+  abstract execute(): Promise<boolean | void>;
   abstract undo(): Promise<void>;
   abstract getChildActions(): ActionInput[];
 

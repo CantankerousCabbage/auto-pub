@@ -5,4 +5,11 @@ export enum PublisherScripts {
   updatePublisher = '_updatePublisher.sh',
 }
 
-export type ScriptInput = PublisherScripts;
+export enum UtilityScripts {
+  checkversion = '_checkversion.sh',
+  checkremoteversion = '_checkremoteversion.sh',
+  downloadlatest = '_downloadlatest.sh'
+
+}
+
+export type ScriptInput = PublisherScripts | UtilityScripts;

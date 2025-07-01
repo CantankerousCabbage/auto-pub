@@ -30,14 +30,14 @@ export const handleAction = async (
   let dummy = {} as Config;
 
   //Execute entry. Add logic if skip args introduced.
-  await currentAction.execute(dummy);
+  await currentAction.execute();
 
   while (currentAction.getActionName() !== MainMenuAction.Exit) {
 
         const choices = currentAction.getChildActions().concat
           ([
              MainMenuAction.Exit,
-             MainMenuAction.Help
+            //  MainMenuAction.Help // Not needed as cli flag will display help messages
           ]);
 
         const actionInput: ActionInput = await select({
@@ -54,7 +54,7 @@ export const handleAction = async (
       const action: Action = fetchAction(actionInput);
 
       try {
-        await action.execute(dummy);
+        await action.execute();
         // Push the action to the stack after execution
         // ActionStack.push(action);
       } catch (error) {
